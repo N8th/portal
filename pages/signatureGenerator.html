@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Business Card to Image</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        background-color: #201c34;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .left-section {
+        background-color: #201c34;
+        color: white;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 350px;
+      }
+
+      .info {
+        text-align: left;
+      }
+
+      .name {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .title {
+        font-size: 16px;
+        margin-bottom: 15px;
+      }
+
+      .contact {
+        font-size: 14px;
+        margin: 5px 0;
+      }
+
+      .contact span {
+        color: #03b875;
+      }
+
+      .logo {
+        width: 100%;
+        align-self: center;
+        margin-top: 15px;
+      }
+
+      .right-section img {
+        display: block;
+        height: 100%;
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="content">
+      <div class="left-section">
+        <div class="info">
+          <p class="name">NATHAN CLARK</p>
+          <p class="title">IT HELP DESK LEAD</p>
+          <p class="contact"><span>P:</span> +1 (219) 455-3322</p>
+          <p class="contact"><span>E:</span> NATHAN.CLARK@SETNAIO.COM</p>
+          <p class="contact">
+            <span>A:</span> 475 BOND ST | LINCOLNSHIRE, IL 60069
+          </p>
+        </div>
+        <img
+          src="https://i.postimg.cc/qB32N7GC/image.png"
+          alt="Company Logo"
+          class="logo"
+        />
+      </div>
+      <div class="right-section">
+        <img
+          src="https://i.postimg.cc/9QpQSPFj/image.png"
+          alt="Right Side Banner"
+        />
+      </div>
+    </div>
+    <button onclick="convertToImage()">Convert to Image</button>
+    <script>
+      async function convertToImage() {
+        const apiUrl = "https://hcti.io/v1/image";
+        const userId = "a0a84e59-d3d6-462b-a51e-a4ef1c4e9916"; // Replace with your user ID
+        const apiKey = "0fc95cdd-dfba-47dd-96ec-634308ea4fa5"; // Replace with your API key
+
+        // Fetch the HTML content of the div
+        const content = document.getElementById("content").outerHTML;
+
+        // Prepare JSON payload
+        const json = {
+          html: content,
+          css: `
+                    body {
+                        margin: 0;
+                        font-family: Arial, sans-serif;
+                    }
+
+                    .container {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: stretch;
+                        background-color: #201c34;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .left-section {
+                        background-color: #201c34;
+                        color: white;
+                        padding: 20px;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                        width: 350px;
+                    }
+
+                    .info {
+                        text-align: left;
+                    }
+
+                    .name {
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+
+                    .title {
+                        font-size: 16px;
+                        margin-bottom: 15px;
+                    }
+
+                    .contact {
+                        font-size: 14px;
+                        margin: 5px 0;
+                    }
+
+                    .contact span {
+                        color: #03B875;
+                    }
+
+                    .logo {
+                        width: 100%;
+                        align-self: center;
+                        margin-top: 15px;
+                    }
+
+                    .right-section img {
+                        display: block;
+                        height: 100%;
+                    }
+                `,
+        };
+
+        // Set up the request options
+        const options = {
+          method: "POST",
+          body: JSON.stringify(json),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Basic " + btoa(userId + ":" + apiKey),
+          },
+        };
+
+        fetch(apiUrl, options)
+          .then((res) => {
+            if (res.ok) {
+              return res.json();
+            } else {
+              return Promise.reject(res.status);
+            }
+          })
+          .then((data) => {
+            console.log("Image URL:", data.url);
+            window.open(data.url, "_blank");
+          })
+          .catch((err) => console.error("Error:", err));
+      }
+    </script>
+  </body>
+</html>
